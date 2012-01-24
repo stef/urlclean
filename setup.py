@@ -19,6 +19,7 @@ setup(
     url = "http://packages.python.org/urlclean",
     py_modules=['urlclean' ],
     long_description=read('README.rst'),
-    classifiers=["Classifier: Development Status :: 4 - Beta",
-                 ],
+    #classifiers=["Classifier: Development Status :: 4 - Beta",
+    #             "License :: OSI Approved :: GNU Affero General Public License v3",
+    #             ],
 )

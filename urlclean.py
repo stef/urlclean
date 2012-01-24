@@ -18,6 +18,12 @@
 #
 # (C) 2012- by Stefan Marsiske, <stefan.marsiske@gmail.com>
 
+"""urlcleaner a module that resolves redirected urls and removes tracking url params
+
+.. moduleauthor:: Stefan Marsiske, <stefan.marsiske@gmail.com>
+
+"""
+
 # use proxies to route requests over privoxy/tor
 PROXYHOST = "localhost"
 PROXYPORT = 8118
@@ -38,27 +44,39 @@ from lxml.html.soupparser import parse
 utmRe=re.compile('(fb_(comment_id|ref|source|action_ids|action_types)|utm_(source|medium|campaign|content|term))=')
 def weedparams(url):
     """
-    removes annoying UTM params to urls.
+    removes Urchin Tracker and Facebook surveillance params from urls.
+
+    Args:
+       url (str):  The url to scrub of ugly params
+
+    Returns:
+       (str).  The return cleaned url
     """
     pcs=urlparse(urllib.unquote_plus(url))
     tmp=list(pcs)
     tmp[4]='&'.join(ifilterfalse(utmRe.match, pcs.query.split('&')))
     return urlunparse(tmp)
 
-def defaultua():
+def _defaultua():
     """
-    default user-agent generator function for httpresolve.
+    Default user-agent generator function for httpresolve.
     """
     return DEFAULTUA
 
 def httpresolve(url, ua=None, proxyhost=PROXYHOST, proxyport=PROXYPORT):
     """
-    resolve one http resolve,
-    specify a function which returns a ua string for some dynamism,
-    and proxy parameters proxyhost and proxyport if necessary,
-    return the new url and the httplib.response object.
+    resolve one redirection of a http request.
+
+    Args:
+       url (str):  The url to follow one redirect
+       ua (fn):  A function returning a User Agent string (optional)
+       proxyhost (str):  http proxy server (optional)
+       proxyport (int):  http proxy server port (optional)
+
+    Returns: (str, httplib.response).  The return resolved url, and
+       the response from the http query
     """
-    if not ua: ua = defaultua
+    if not ua: ua = _defaultua
     # remove fb_ and utm_ tracking params
     url=weedparams(url)
     us=httplib.urlsplit(url)
@@ -86,8 +104,14 @@ def httpresolve(url, ua=None, proxyhost=PROXYHOST, proxyport=PROXYPORT):
 
 def unmeta(url, res):
     """
-    finds any meta redirects a httplib.response object that has
-    text/html as content-type. url is the original url.
+    Finds any meta redirects a httplib.response object that has
+    text/html as content-type.
+
+    Args:
+       url (str):  The url to follow one redirect
+       res (httplib.response):  a http.response object
+
+    Returns: (str).  The return resolved url
     """
     if res and (res.getheader('Content-type') or "").startswith('text/html'):
         root=parse(res)
@@ -103,9 +127,15 @@ def unmeta(url, res):
 def unshorten(url, cache=None, ua=None, **kwargs):
     """
     resolves all HTTP/META redirects and optionally caches them in any
-    object supporting a __getitem__, __setitem__ interface, and a
-    function returning user agent for the http request, if none is
-    given the default is google bot.
+    object supporting a __getitem__, __setitem__ interface
+
+    Args:
+       url (str):  The url to follow one redirect
+       cache (PersistentCryptoDict):  an optional PersistentCryptoDict instance
+       ua (fn):  A function returning a User Agent string (optional), the default is googlebot.
+       **kwargs (dict):  option proxy args for urlclean.httpresolve
+
+    Returns: (str).  The return final cleaned url.
     """
     prev=None
     origurl=url
@@ -124,7 +154,7 @@ def unshorten(url, cache=None, ua=None, **kwargs):
         cache[origurl]=url
     return url
 
-def main():
+def _main():
     if len(sys.argv)>1:
         if sys.argv[1]=='test':
             url="http://bit.ly/xJ5pK2"
@@ -142,4 +172,4 @@ def main():
             print unshorten(sys.argv[1])
 
 if __name__ == "__main__":
-    main()
+    _main()
