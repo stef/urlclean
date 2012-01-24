@@ -2,6 +2,19 @@
 Welcome to urlclean's documentation!
 ************************************
 
+urlclean provides functions:
+
+* to follow a http redirect,
+
+* to follow a HTML META redirect,
+
+* to remove Urchin and Facebook tracker URL parameters
+
+* that combines all these to unshorten and resolve various URLS
+
+Try it out from the commandline::
+   python -m urlclean <some url>
+
 Contents:
 
 
