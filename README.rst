@@ -29,7 +29,7 @@ urlclean.weedparams(url)
       url (str):  The url to scrub of ugly params
 
    Returns:
-      str.  The return cleaned url
+      (str).  The return cleaned url
 
 urlclean.httpresolve(url, ua=None, proxyhost='localhost', proxyport=8118)
 
