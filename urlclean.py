@@ -36,12 +36,13 @@ DEFAULTUA = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.
 __all__ = ["weedparams", "httpresolve", "unmeta", "unshorten", "main"]
 
 import re, urllib2, cookielib, time, sys
-from urlparse import urlparse, urlunparse
+from urlparse import urlsplit, urlunsplit
 from itertools import ifilterfalse
 import urllib, httplib
 from lxml.html.soupparser import parse
 
 utmRe=re.compile('(fb_(comment_id|ref|source|action_ids|action_types)|utm_(source|medium|campaign|content|term))=')
+ytRe=re.compile('(v|p)=')
 def weedparams(url):
     """
     removes Urchin Tracker and Facebook surveillance params from urls.
@@ -54,10 +55,18 @@ def weedparams(url):
 
        (str).  The return cleaned url
     """
-    pcs=urlparse(urllib.unquote_plus(url))
+    pcs=urlsplit(urllib.unquote_plus(url))
     tmp=list(pcs)
-    tmp[4]='&'.join(ifilterfalse(utmRe.match, pcs.query.split('&')))
-    return urlunparse(tmp)
+    tmp[2]= urllib.quote_plus(tmp[2],'~áÁéÉíÍóÓöÖőŐúÚüÜűŰłŁß/')
+    if tmp[1].endswith('youtube.com'):
+        tmp[3]= ([x for x in pcs.query.split('&') if ytRe.match(x)] or [None])[0]
+    elif tmp[1].endswith('vimeo.com'):
+        tmp[3]= ([x for x in pcs.query.split('&') if x.startswith('clip_id=')] or [None])[0]
+    else:
+        tmp[3]= urllib.quote_plus('&'.join(ifilterfalse(utmRe.match,
+                                                        pcs.query.split('&'))),
+                                  'áÁéÉíÍóÓöÖőŐúÚüÜűŰłŁß=&')
+    return urlunsplit(tmp)
 
 def _defaultua():
     """
@@ -85,7 +94,6 @@ def httpresolve(url, ua=None, proxyhost=PROXYHOST, proxyport=PROXYPORT):
     """
     if not ua: ua = _defaultua
     # remove fb_ and utm_ tracking params
-    url=weedparams(url)
     us=httplib.urlsplit(url)
     if not proxyhost:
         # connect directly
@@ -106,8 +114,7 @@ def httpresolve(url, ua=None, proxyhost=PROXYHOST, proxyport=PROXYPORT):
     res = conn.getresponse()
     if res.status in [301, 304]:
         url = res.getheader('Location')
-    url=weedparams(url)
-    return (url, res)
+    return (weedparams(url), res)
 
 def unmeta(url, res):
     """
@@ -132,7 +139,7 @@ def unmeta(url, res):
                 parts=httplib.urlsplit(urllib.unquote_plus(newurl))
                 if parts.scheme and parts.netloc and parts.path:
                     url=newurl
-    return url
+    return weedparams(url)
 
 def unshorten(url, cache=None, ua=None, **kwargs):
     """
@@ -147,7 +154,7 @@ def unshorten(url, cache=None, ua=None, **kwargs):
 
        ua (fn):  A function returning a User Agent string (optional), the default is googlebot.
 
-       **kwargs (dict):  option proxy args for urlclean.httpresolve
+       **kwargs (dict):  optional proxy args for urlclean.httpresolve (default: localhost:8118)
 
     Returns: (str).  The return final cleaned url.
 
@@ -156,15 +163,16 @@ def unshorten(url, cache=None, ua=None, **kwargs):
     origurl=url
     seen=[]
     while url!=prev:
+        # abort recursions
         if url in seen: return ""
         seen.append(url)
         if cache:
             cached=cache[url]
             if cached: return cached
+        url=weedparams(url)
         prev=url
         url,root=httpresolve(url, ua=ua, **kwargs)
-        if root:
-            url=unmeta(url,root)
+        url=unmeta(url,root)
     if cache:
         cache[origurl]=url
     return url
@@ -182,7 +190,7 @@ def _main():
             # much faster resolve now
             print unshorten(url, cache=cache)
             # slower again
-            print unshorten(url,)
+            print unshorten(url)
         else:
             print unshorten(sys.argv[1])
 
