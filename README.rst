@@ -76,7 +76,7 @@ urlclean.unmeta(url, res)
 
    Returns: (str).  The return resolved url
 
-urlclean.unshorten(url, cache=None, ua=None, **kwargs)
+urlclean.unshorten(url, cache=None, ua=None, >>**<<kwargs)
 
    resolves all HTTP/META redirects and optionally caches them in any
    object supporting a __getitem__, __setitem__ interface
