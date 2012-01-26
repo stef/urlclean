@@ -38,6 +38,7 @@ __all__ = ["weedparams", "httpresolve", "unmeta", "unshorten", "main"]
 import re, urllib2, cookielib, time, sys
 from urlparse import urlsplit, urlunsplit
 from itertools import ifilterfalse
+from cStringIO import  StringIO
 import urllib, httplib
 from lxml.html.soupparser import parse
 
@@ -130,8 +131,8 @@ def unmeta(url, res):
     Returns: (str).  The return resolved url
 
     """
-    if res and ((res.getheader('Content-type') or "").startswith('text/html') and res.getheader('Content-Length')<1024*3):
-        root=parse(res)
+    if res and ((res.getheader('Content-type') or "").startswith('text/html') and int(res.getheader('Content-Length'))<8192):
+        root=parse(StringIO(res.read(8192)))
         for x in root.xpath('//meta[@http-equiv="refresh"]'):
             newurl=x.get('content').split(';')
             if len(newurl)>1:
