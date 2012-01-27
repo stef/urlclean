@@ -131,8 +131,8 @@ def unmeta(url, res):
     Returns: (str).  The return resolved url
 
     """
-    if res and ((res.getheader('Content-type') or "").startswith('text/html') and int(res.getheader('Content-Length'))<8192):
-        root=parse(StringIO(res.read(8192)))
+    if res and (res.getheader('Content-type') or "").startswith('text/html'):
+        root=parse(StringIO(res.read(65535)))
         for x in root.xpath('//meta[@http-equiv="refresh"]'):
             newurl=x.get('content').split(';')
             if len(newurl)>1:
