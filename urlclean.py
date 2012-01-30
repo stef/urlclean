@@ -66,7 +66,7 @@ def weedparams(url):
     else:
         tmp[3]= urllib.quote_plus('&'.join(ifilterfalse(utmRe.match,
                                                         pcs.query.split('&'))),
-                                  'áÁéÉíÍóÓöÖőŐúÚüÜűŰłŁß=&')
+                                  'áÁéÉíÍóÓöÖőŐúÚüÜűŰłŁß=&/')
     return urlunsplit(tmp)
 
 def _defaultua():
