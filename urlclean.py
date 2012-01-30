@@ -99,10 +99,10 @@ def httpresolve(url, ua=None, proxyhost=PROXYHOST, proxyport=PROXYPORT):
     if not proxyhost:
         # connect directly
         if us.scheme=='http':
-            conn = httplib.HTTPConnection(us.netloc)
+            conn = httplib.HTTPConnection(us.netloc, timeout=5)
             req = urllib.quote(url[7+len(us.netloc):])
         elif us.scheme=='https':
-            conn = httplib.HTTPSConnection(us.netloc)
+            conn = httplib.HTTPSConnection(us.netloc, timeout=5)
             req = urllib.quote(url[8+len(us.netloc):])
     else:
         # connect using proxy
@@ -132,13 +132,22 @@ def unmeta(url, res):
 
     """
     if res and (res.getheader('Content-type') or "").startswith('text/html'):
-        root=parse(StringIO(res.read(65535)))
+        size=65535
+        if res.getheader('Content-Length'):
+           try:
+              tmp=int(res.getheader('Content-length'))
+              if tmp<65535:
+                 size=tmp
+           except:
+              print "wrong content-length:",res.getheader('Content-length')
+
+        root=parse(StringIO(res.read(size)))
         for x in root.xpath('//meta[@http-equiv="refresh"]'):
             newurl=x.get('content').split(';')
             if len(newurl)>1:
                 newurl=newurl[1].strip()[4:]
                 parts=httplib.urlsplit(urllib.unquote_plus(newurl))
-                if parts.scheme and parts.netloc and parts.path:
+                if parts.scheme and parts.netloc:
                     url=newurl
     return weedparams(url)
 
