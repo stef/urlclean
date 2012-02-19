@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # Utility function to read the README file.
 # Used for the long_description.  It's nice, because now 1) we have a top level
@@ -10,12 +10,13 @@ def read(fname):
 
 setup(
     name = "urlclean",
-    version = "0.5",
+    version = "0.5.1",
     author = "Stefan Marsiske",
     author_email = "stefan.marsiske@gmail.com",
     description = ("Utilities to clean up URLs "),
     license = "AGPLv3+",
     keywords = "URL HTTP sanitizing privacy",
+    packages = find_packages(),
     url = "http://packages.python.org/urlclean",
     py_modules=['urlclean' ],
     long_description=read('README.rst'),

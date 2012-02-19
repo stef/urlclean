@@ -15,6 +15,7 @@ urlclean provides functions:
 * combines all these to unshorten and resolve various URLS
 
 Try it out from the commandline::
+
   python -m urlclean <some url>
 
 Contents:
@@ -40,3 +41,10 @@ Plugins
 
 Plugins should have a convert function that receives and returns a URL. In case
 of an error an unchanged URL should be returned.
+
+Changelog
+*********
+
+* v0.5.1 - install/doc fixes
+* v0.5 - added plugins
+

@@ -14,7 +14,8 @@ urlclean provides functions:
 
 * combines all these to unshorten and resolve various URLS
 
-Try it out from the commandline::
+Try it out from the commandline:
+
    python -m urlclean <some url>
 
 Contents:
@@ -48,7 +49,7 @@ urlclean.weedparams(url)
 
       (str).  The return cleaned url
 
-urlclean.httpresolve(url, ua=None, proxyhost='localhost', proxyport=8118)
+urlclean.httpresolve(url, ua=None, proxyhost='', proxyport='')
 
    resolve one redirection of a http request.
 
@@ -78,7 +79,7 @@ urlclean.unmeta(url, res)
 
    Returns: (str).  The return resolved url
 
-urlclean.unshorten(url, cache=None, ua=None, **kwargs)
+urlclean.unshorten(url, cache=None, ua=None, >>**<<kwargs)
 
    resolves all HTTP/META redirects and optionally caches them in any
    object supporting a __getitem__, __setitem__ interface
@@ -104,3 +105,11 @@ Plugins
 
 Plugins should have a convert function that receives and returns a
 URL. In case of an error an unchanged URL should be returned.
+
+
+Changelog
+=========
+
+* v0.5.1 - install/doc fixes
+
+* v0.5 - added plugins
