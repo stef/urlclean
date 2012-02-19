@@ -8,9 +8,11 @@ urlclean provides functions:
 
 * to follow a HTML META redirect,
 
-* to remove Urchin and Facebook tracker URL parameters
+* to remove Urchin and Facebook tracker URL parameters,
 
-* that combines all these to unshorten and resolve various URLS
+* plugins for futher cleaning power,
+
+* combines all these to unshorten and resolve various URLS
 
 Try it out from the commandline::
    python -m urlclean <some url>
@@ -76,7 +78,7 @@ urlclean.unmeta(url, res)
 
    Returns: (str).  The return resolved url
 
-urlclean.unshorten(url, cache=None, ua=None, >>**<<kwargs)
+urlclean.unshorten(url, cache=None, ua=None, **kwargs)
 
    resolves all HTTP/META redirects and optionally caches them in any
    object supporting a __getitem__, __setitem__ interface
@@ -91,6 +93,14 @@ urlclean.unshorten(url, cache=None, ua=None, >>**<<kwargs)
       ua (fn):  A function returning a User Agent string (optional),
       the default is googlebot.
 
-      >>**<<kwargs (dict):  option proxy args for urlclean.httpresolve
+      >>**<<kwargs (dict):  optional proxy args for
+      urlclean.httpresolve (default: localhost:8118)
 
    Returns: (str).  The return final cleaned url.
+
+
+Plugins
+=======
+
+Plugins should have a convert function that receives and returns a
+URL. In case of an error an unchanged URL should be returned.

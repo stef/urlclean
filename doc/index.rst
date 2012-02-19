@@ -10,8 +10,9 @@ urlclean provides functions:
 
 * to follow a http redirect,
 * to follow a HTML META redirect,
-* to remove Urchin and Facebook tracker URL parameters
-* that combines all these to unshorten and resolve various URLS
+* to remove Urchin and Facebook tracker URL parameters,
+* plugins for futher cleaning power,
+* combines all these to unshorten and resolve various URLS
 
 Try it out from the commandline::
   python -m urlclean <some url>
@@ -33,3 +34,9 @@ Documentation for the Code
 
 .. automodule:: urlclean
    :members:
+
+Plugins
+*******
+
+Plugins should have a convert function that receives and returns a URL. In case
+of an error an unchanged URL should be returned.

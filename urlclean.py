@@ -25,8 +25,10 @@
 """
 
 # use proxies to route requests over privoxy/tor
-PROXYHOST = "localhost"
-PROXYPORT = 8118
+#PROXYHOST = "localhost"
+#PROXYPORT = 8118
+PROXYHOST = ""
+PROXYPORT = ""
 
 # default user-agent, check out random_agent.py for a dynamic alternative
 DEFAULTUA = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
@@ -41,6 +43,7 @@ from itertools import ifilterfalse
 from cStringIO import  StringIO
 import urllib, httplib
 from lxml.html.soupparser import parse
+import plugins
 
 utmRe=re.compile('(fb_(comment_id|ref|source|action_ids|action_types)|utm_(source|medium|campaign|content|term))=')
 ytRe=re.compile('(v|p)=')
@@ -183,6 +186,12 @@ def unshorten(url, cache=None, ua=None, **kwargs):
         prev=url
         url,root=httpresolve(url, ua=ua, **kwargs)
         url=unmeta(url,root)
+    for p in plugins.modules:
+        url=p.convert(url)
+        try:
+            url=p.convert(url)
+        except:
+            pass # ignore plugin failures
     if cache:
         cache[origurl]=url
     return url
