@@ -28,4 +28,5 @@ setup(
                    "Topic :: Security",
                    "Topic :: Security :: Cryptography",
                    ],
+    install_requires = [ 'lxml' ],
 )
