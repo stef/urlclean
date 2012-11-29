@@ -53,7 +53,7 @@ def weedparams(url):
 
     Args:
 
-       url (str):  The url to scrub of ugly params
+       url (str):  The url to scrub off ugly params
 
     Returns:
 
@@ -103,10 +103,10 @@ def httpresolve(url, ua=None, proxyhost=PROXYHOST, proxyport=PROXYPORT):
         # connect directly
         if us.scheme=='http':
             conn = httplib.HTTPConnection(us.netloc, timeout=5)
-            req = urllib.quote(url[7+len(us.netloc):])
+            req = url[7+len(us.netloc):]
         elif us.scheme=='https':
             conn = httplib.HTTPSConnection(us.netloc, timeout=5)
-            req = urllib.quote(url[8+len(us.netloc):])
+            req = url[8+len(us.netloc):]
     else:
         # connect using proxy
         conn = httplib.HTTPConnection(proxyhost,proxyport)
@@ -114,7 +114,7 @@ def httpresolve(url, ua=None, proxyhost=PROXYHOST, proxyport=PROXYPORT):
     #conn.set_debuglevel(9)
     headers={'User-Agent': ua(),
              'Accept': '*/*',}
-    conn.request("GET", url, None, headers)
+    conn.request("GET", req, None, headers)
     res = conn.getresponse()
     if res.status in [301, 304]:
         url = res.getheader('Location')
