@@ -38,7 +38,7 @@ DEFAULTUA = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.
 __all__ = ["weedparams", "httpresolve", "unmeta", "unshorten", "main"]
 
 import re, urllib2, cookielib, time, sys
-from urlparse import urlsplit, urlunsplit
+from urlparse import urlsplit, urlunsplit, urljoin
 from itertools import ifilterfalse
 from cStringIO import  StringIO
 import urllib, httplib
@@ -183,6 +183,12 @@ def unshorten(url, cache=None, ua=None, **kwargs):
             cached=cache[url]
             if cached: return cached
         url=weedparams(url)
+        # expand relative urls
+        us=httplib.urlsplit(url)
+        if us.scheme=='' and us.netloc == '':
+            url=urljoin(prev, url)
+        elif us.scheme=='':
+            url="%s:%s" % (httplib.urlsplit(prev).scheme, url)
         prev=url
         url,root=httpresolve(url, ua=ua, **kwargs)
         url=unmeta(url,root)

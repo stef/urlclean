@@ -110,6 +110,8 @@ URL. In case of an error an unchanged URL should be returned.
 Changelog
 =========
 
+* v0.5.4 - fixed httpresolve for relative urls
+
 * v0.5.1 - install/doc fixes
 
 * v0.5 - added plugins

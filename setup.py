@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name = "urlclean",
-    version = "0.5.3",
+    version = "0.5.4",
     author = "Stefan Marsiske",
     author_email = "stefan.marsiske@gmail.com",
     description = ("Utilities to clean up URLs "),
