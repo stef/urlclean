@@ -142,7 +142,7 @@ def unmeta(url, res):
               if tmp<65535:
                  size=tmp
            except:
-              print "wrong content-length:",res.getheader('Content-length')
+              print("wrong content-length:", res.getheader('Content-length'))
 
         root=parse(StringIO(res.read(size)))
         for x in root.xpath('//meta[@http-equiv="refresh"]'):
@@ -207,17 +207,17 @@ def _main():
         if sys.argv[1]=='test':
             url="http://bit.ly/xJ5pK2"
             # uncached
-            print unshorten(url)
+            print(unshorten(url))
             # start caching
             from pcd import PersistentCryptoDict
             cache=PersistentCryptoDict()
-            print unshorten(url, cache=cache)
+            print(unshorten(url, cache=cache))
             # much faster resolve now
-            print unshorten(url, cache=cache)
+            print(unshorten(url, cache=cache))
             # slower again
-            print unshorten(url)
+            print(unshorten(url))
         else:
-            print unshorten(sys.argv[1])
+            print(unshorten(sys.argv[1]))
 
 if __name__ == "__main__":
     _main()
