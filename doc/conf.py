@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'urlclean'
-copyright = u'2012, Stefan Marsiske'
+project = 'urlclean'
+copyright = '2012, Stefan Marsiske'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -178,8 +178,8 @@ htmlhelp_basename = 'urlcleandoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'urlclean.tex', u'urlclean Documentation',
-   u'Stefan Marsiske', 'manual'),
+  ('index', 'urlclean.tex', 'urlclean Documentation',
+   'Stefan Marsiske', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -211,8 +211,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'urlclean', u'urlclean Documentation',
-     [u'Stefan Marsiske'], 1)
+    ('index', 'urlclean', 'urlclean Documentation',
+     ['Stefan Marsiske'], 1)
 ]
 
 
