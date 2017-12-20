@@ -43,7 +43,7 @@ urlclean.weedparams(url)
 
    Args:
 
-      url (str):  The url to scrub of ugly params
+      url (str):  The url to scrub
 
    Returns:
 
@@ -63,19 +63,19 @@ urlclean.httpresolve(url, ua=None, proxyhost='', proxyport='')
 
       proxyport (int):  http proxy server port (optional)
 
-   Returns: (str, httplib.response).  The return resolved url, and
+   Returns: (str, http.client.response).  The return resolved url, and
       the response from the http query
 
 urlclean.unmeta(url, res)
 
-   Finds any meta redirects a httplib.response object that has
+   Finds any meta redirects a http.client.response object that has
    text/html as content-type.
 
    Args:
 
       url (str):  The url to follow one redirect
 
-      res (httplib.response):  a http.response object
+      res (http.client.response):  a http response object
 
    Returns: (str).  The return resolved url
 
@@ -109,6 +109,8 @@ URL. In case of an error an unchanged URL should be returned.
 
 Changelog
 =========
+
+* v0.6.0 - migrated to python 3
 
 * v0.5.4 - fixed httpresolve for relative urls
 

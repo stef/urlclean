@@ -40,7 +40,7 @@ __all__ = ["weedparams", "httpresolve", "unmeta", "unshorten", "main"]
 import re, urllib.request, urllib.error, urllib.parse, http.cookiejar, time, sys
 from urllib.parse import urlsplit, urlunsplit, urljoin
 from itertools import filterfalse
-from io import  StringIO
+from io import StringIO
 import urllib.request, urllib.parse, urllib.error, http.client
 from lxml.html.soupparser import parse
 import plugins
@@ -92,7 +92,7 @@ def httpresolve(url, ua=None, proxyhost=PROXYHOST, proxyport=PROXYPORT):
 
        proxyport (int):  http proxy server port (optional)
 
-    Returns: (str, httplib.response).  The return resolved url, and
+    Returns: (str, http.client.response).  The return resolved url, and
        the response from the http query
 
     """
@@ -122,14 +122,14 @@ def httpresolve(url, ua=None, proxyhost=PROXYHOST, proxyport=PROXYPORT):
 
 def unmeta(url, res):
     """
-    Finds any meta redirects a httplib.response object that has
+    Finds any meta redirects a http.client.response object that has
     text/html as content-type.
 
     Args:
 
        url (str):  The url to follow one redirect
 
-       res (httplib.response):  a http.response object
+       res (http.client.response):  a http.response object
 
     Returns: (str).  The return resolved url
 
@@ -144,7 +144,7 @@ def unmeta(url, res):
            except:
               print("wrong content-length:", res.getheader('Content-length'))
 
-        root=parse(StringIO(res.read(size)))
+        root=parse(StringIO(res.read(size).decode('utf-8')))
         for x in root.xpath('//meta[@http-equiv="refresh"]'):
             newurl=x.get('content').split(';')
             if len(newurl)>1:

@@ -10,16 +10,17 @@ def read(fname):
 
 setup(
     name = "urlclean",
-    version = "0.5.4",
+    version = "0.6.0",
     author = "Stefan Marsiske",
     author_email = "stefan.marsiske@gmail.com",
-    description = ("Utilities to clean up URLs "),
+    description = ("Utilities to clean up URLs"),
     license = "AGPLv3+",
     keywords = "URL HTTP sanitizing privacy",
     packages = find_packages(),
     url = "http://packages.python.org/urlclean",
-    py_modules=['urlclean' ],
-    long_description=read('README.rst'),
+    py_modules = ['urlclean'],
+    install_requires = ['lxml', 'beautifulsoup4'],
+    long_description = read('README.rst'),
     classifiers = ["Development Status :: 4 - Beta",
                    "License :: OSI Approved :: GNU Affero General Public License v3",
                    "Environment :: Web Environment",
@@ -27,6 +28,5 @@ setup(
                    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
                    "Topic :: Security",
                    "Topic :: Security :: Cryptography",
-                   ],
-    install_requires = [ 'lxml' ],
+                   ]
 )
