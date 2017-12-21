@@ -18,21 +18,9 @@ Try it out from the commandline:
 
    python -m urlclean <some url>
 
-Contents:
 
-
-Indices and tables
-******************
-
-* *Index*
-
-* *Module Index*
-
-* *Search Page*
-
-
-Documentation for the Code
-==========================
+Documentation
+=============
 
 urlcleaner a module that resolves redirected urls and removes tracking
 url params
