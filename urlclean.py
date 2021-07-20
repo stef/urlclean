@@ -37,11 +37,11 @@ DEFAULTUA = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.
 
 __all__ = ["weedparams", "httpresolve", "unmeta", "unshorten", "main"]
 
-import re, urllib2, cookielib, time, sys
-from urlparse import urlsplit, urlunsplit, urljoin
-from itertools import ifilterfalse
-from cStringIO import  StringIO
-import urllib, httplib
+import re, urllib.request, urllib.error, urllib.parse, http.cookiejar, time, sys
+from urllib.parse import urlsplit, urlunsplit, urljoin
+from itertools import filterfalse
+from io import StringIO
+import urllib.request, urllib.parse, urllib.error, http.client
 from lxml.html.soupparser import parse
 import plugins
 
@@ -59,15 +59,15 @@ def weedparams(url):
 
        (str).  The return cleaned url
     """
-    pcs=urlsplit(urllib.unquote_plus(url))
+    pcs=urlsplit(urllib.parse.unquote_plus(url))
     tmp=list(pcs)
-    tmp[2]= urllib.quote_plus(tmp[2],'~áÁéÉíÍóÓöÖőŐúÚüÜűŰłŁß/')
+    tmp[2]= urllib.parse.quote_plus(tmp[2],'~áÁéÉíÍóÓöÖőŐúÚüÜűŰłŁß/')
     if tmp[1].endswith('youtube.com'):
         tmp[3]= ([x for x in pcs.query.split('&') if ytRe.match(x)] or [None])[0]
     elif tmp[1].endswith('vimeo.com'):
         tmp[3]= ([x for x in pcs.query.split('&') if x.startswith('clip_id=')] or [None])[0]
     else:
-        tmp[3]= urllib.quote_plus('&'.join(ifilterfalse(utmRe.match,
+        tmp[3]= urllib.parse.quote_plus('&'.join(filterfalse(utmRe.match,
                                                         pcs.query.split('&'))),
                                   'áÁéÉíÍóÓöÖőŐúÚüÜűŰłŁß=&/')
     return urlunsplit(tmp)
@@ -92,24 +92,24 @@ def httpresolve(url, ua=None, proxyhost=PROXYHOST, proxyport=PROXYPORT):
 
        proxyport (int):  http proxy server port (optional)
 
-    Returns: (str, httplib.response).  The return resolved url, and
+    Returns: (str, http.client.response).  The return resolved url, and
        the response from the http query
 
     """
     if not ua: ua = _defaultua
     # remove fb_ and utm_ tracking params
-    us=httplib.urlsplit(url)
+    us=http.client.urlsplit(url)
     if not proxyhost:
         # connect directly
         if us.scheme=='http':
-            conn = httplib.HTTPConnection(us.netloc, timeout=5)
+            conn = http.client.HTTPConnection(us.netloc, timeout=5)
             req = url[7+len(us.netloc):]
         elif us.scheme=='https':
-            conn = httplib.HTTPSConnection(us.netloc, timeout=5)
+            conn = http.client.HTTPSConnection(us.netloc, timeout=5)
             req = url[8+len(us.netloc):]
     else:
         # connect using proxy
-        conn = httplib.HTTPConnection(proxyhost,proxyport)
+        conn = http.client.HTTPConnection(proxyhost,proxyport)
         req = url
     #conn.set_debuglevel(9)
     headers={'User-Agent': ua(),
@@ -122,14 +122,14 @@ def httpresolve(url, ua=None, proxyhost=PROXYHOST, proxyport=PROXYPORT):
 
 def unmeta(url, res):
     """
-    Finds any meta redirects a httplib.response object that has
+    Finds any meta redirects a http.client.response object that has
     text/html as content-type.
 
     Args:
 
        url (str):  The url to follow one redirect
 
-       res (httplib.response):  a http.response object
+       res (http.client.response):  a http.response object
 
     Returns: (str).  The return resolved url
 
@@ -142,14 +142,14 @@ def unmeta(url, res):
               if tmp<65535:
                  size=tmp
            except:
-              print "wrong content-length:",res.getheader('Content-length')
+              print("wrong content-length:", res.getheader('Content-length'))
 
-        root=parse(StringIO(res.read(size)))
+        root=parse(StringIO(res.read(size).decode('utf-8')))
         for x in root.xpath('//meta[@http-equiv="refresh"]'):
             newurl=x.get('content').split(';')
             if len(newurl)>1:
                 newurl=newurl[1].strip()[4:]
-                parts=httplib.urlsplit(urllib.unquote_plus(newurl))
+                parts=http.client.urlsplit(urllib.parse.unquote_plus(newurl))
                 if parts.scheme and parts.netloc:
                     url=newurl
     return weedparams(url)
@@ -184,11 +184,11 @@ def unshorten(url, cache=None, ua=None, **kwargs):
             if cached: return cached
         url=weedparams(url)
         # expand relative urls
-        us=httplib.urlsplit(url)
+        us=http.client.urlsplit(url)
         if us.scheme=='' and us.netloc == '':
             url=urljoin(prev, url)
         elif us.scheme=='':
-            url="%s:%s" % (httplib.urlsplit(prev).scheme, url)
+            url="%s:%s" % (http.client.urlsplit(prev).scheme, url)
         prev=url
         url,root=httpresolve(url, ua=ua, **kwargs)
         url=unmeta(url,root)
@@ -207,17 +207,17 @@ def _main():
         if sys.argv[1]=='test':
             url="http://bit.ly/xJ5pK2"
             # uncached
-            print unshorten(url)
+            print(unshorten(url))
             # start caching
             from pcd import PersistentCryptoDict
             cache=PersistentCryptoDict()
-            print unshorten(url, cache=cache)
+            print(unshorten(url, cache=cache))
             # much faster resolve now
-            print unshorten(url, cache=cache)
+            print(unshorten(url, cache=cache))
             # slower again
-            print unshorten(url)
+            print(unshorten(url))
         else:
-            print unshorten(sys.argv[1])
+            print(unshorten(sys.argv[1]))
 
 if __name__ == "__main__":
     _main()

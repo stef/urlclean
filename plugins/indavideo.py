@@ -7,9 +7,9 @@ License: MIT
 """
 
 from lxml import html
-from urllib2 import urlopen
-from urllib import unquote_plus
-from urlparse import urlsplit
+from urllib.request import urlopen
+from urllib.parse import unquote_plus
+from urllib.parse import urlsplit
 import re
 
 __prefs__ = ('720', '360', 'webm')
