@@ -19,7 +19,7 @@ setup(
     packages = find_packages(),
     url = "http://packages.python.org/urlclean",
     py_modules = ['urlclean'],
-    install_requires = ['lxml', 'beautifulsoup4'],
+    install_requires = ['lxml', 'beautifulsoup4', 'persistent_crypto_dict'],
     long_description = read('README.rst'),
     classifiers = ["Development Status :: 4 - Beta",
                    "License :: OSI Approved :: GNU Affero General Public License v3",
